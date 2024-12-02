@@ -1,20 +1,20 @@
 use std::fmt::Display;
 use std::time::Instant;
 use itertools::Itertools;
+use std::iter::zip;
 
 use aoc_2024::get_input_as_string;
 
-fn calculate_difference(input: &str) -> u32 {
-    let mut difference: u32 = 0;
-    let mut left: Vec<u32> = Vec::new();
-    let mut right: Vec<u32> = Vec::new();
+fn calculate_difference(input: &str) -> i32 {
+    let mut left: Vec<i32> = Vec::new();
+    let mut right: Vec<i32> = Vec::new();
 
     for line in input.split("\n") {
         if line.is_empty() {
             continue;
         };
 
-        let location_ids: Vec<u32> = line.split(" ").filter(|lid| !lid.is_empty()).map(|lid| lid.parse().unwrap_or(0)).collect::<Vec<u32>>();
+        let location_ids: Vec<i32> = line.split(" ").filter(|lid| !lid.is_empty()).map(|lid| lid.parse().unwrap_or(0)).collect::<Vec<i32>>();
 
         left.push(*location_ids.first().unwrap());
         right.push(*location_ids.last().unwrap());
@@ -23,15 +23,7 @@ fn calculate_difference(input: &str) -> u32 {
     left.sort();
     right.sort();
 
-    for i in 0..left.len() {
-        if left[i] > right[i] {
-            difference += left[i] - right[i];
-        } else {
-            difference += right[i] - left[i];
-        }
-    }
-
-    difference
+    zip(left, right).map(|(l, r)| (l - r).abs()).sum()
 }
 
 fn calculate_similarity_code(input: &str) -> u32 {
