@@ -1,7 +1,7 @@
-use std::fmt::Display;
-use std::time::Instant;
 use itertools::Itertools;
+use std::fmt::Display;
 use std::iter::zip;
+use std::time::Instant;
 
 use aoc_2024::get_input_as_string;
 
@@ -14,7 +14,11 @@ fn calculate_difference(input: &str) -> i32 {
             continue;
         };
 
-        let location_ids: Vec<i32> = line.split(" ").filter(|lid| !lid.is_empty()).map(|lid| lid.parse().unwrap_or(0)).collect::<Vec<i32>>();
+        let location_ids: Vec<i32> = line
+            .split(" ")
+            .filter(|lid| !lid.is_empty())
+            .map(|lid| lid.parse().unwrap_or(0))
+            .collect::<Vec<i32>>();
 
         left.push(*location_ids.first().unwrap());
         right.push(*location_ids.last().unwrap());
@@ -36,7 +40,11 @@ fn calculate_similarity_code(input: &str) -> u32 {
             continue;
         }
 
-        let location_ids: Vec<u32> = line.split(" ").filter(|lid| !lid.is_empty()).map(|lid| lid.parse().unwrap_or(0)).collect::<Vec<u32>>();
+        let location_ids: Vec<u32> = line
+            .split(" ")
+            .filter(|lid| !lid.is_empty())
+            .map(|lid| lid.parse().unwrap_or(0))
+            .collect::<Vec<u32>>();
 
         left.push(*location_ids.first().unwrap());
         right.push(*location_ids.last().unwrap());
@@ -102,6 +110,4 @@ mod tests {
 
         assert_eq!(31, res);
     }
-
 }
-

@@ -3,7 +3,11 @@ use std::time::Instant;
 
 use aoc_2024::get_input_as_string;
 
-fn is_valid(report: &Vec<u32>, use_dampener: bool, validator_fn: &dyn Fn(u32, u32) -> bool) -> bool {
+fn is_valid(
+    report: &Vec<u32>,
+    use_dampener: bool,
+    validator_fn: &dyn Fn(u32, u32) -> bool,
+) -> bool {
     for i in 0..report.len() - 1 {
         let a = report[i];
         let b = report[i + 1];
@@ -35,20 +39,21 @@ fn is_valid_descending(a: u32, b: u32) -> bool {
     a > b && a <= b + 3
 }
 
-fn count_safe_reports(input: &str, use_dampener: bool) -> u32 {
-    input.split("\n")
+fn count_safe_reports(input: &str, use_dampener: bool) -> usize {
+    input
+        .split("\n")
         .filter(|l| !l.is_empty())
-            .map(|l| l.split(" ")
+        .map(|l| {
+            l.split(" ")
                 .filter(|v| !v.is_empty())
-                .map(|v| v.parse::<u32>()
-                    .unwrap()
-                ).collect::<Vec<u32>>()
-            ).map(|report| {
-                if is_valid(&report, use_dampener, &is_valid_ascending) || is_valid(&report, use_dampener, &is_valid_descending) {
-                    return 1;
-                }
-                0
-            }).sum()
+                .map(|v| v.parse::<u32>().unwrap())
+                .collect::<Vec<u32>>()
+        })
+        .filter(|report| {
+            is_valid(&report, use_dampener, &is_valid_ascending)
+                || is_valid(&report, use_dampener, &is_valid_descending)
+        })
+        .count()
 }
 
 fn solve(input: &str) -> (impl Display, impl Display) {
@@ -100,6 +105,4 @@ mod tests {
 
         assert_eq!(4, res);
     }
-
 }
-

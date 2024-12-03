@@ -12,7 +12,11 @@ pub fn get_input(filename: &str) -> Vec<String> {
 
     let reader = BufReader::new(file);
 
-    reader.lines().map(|l| l.unwrap()).filter(|a| !a.is_empty()).collect()
+    reader
+        .lines()
+        .map(|l| l.unwrap())
+        .filter(|a| !a.is_empty())
+        .collect()
 }
 
 pub fn get_input_as_string(filename: &str) -> String {
