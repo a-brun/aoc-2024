@@ -1,7 +1,7 @@
 use std::fmt::Display;
 use std::time::Instant;
 
-use aoc_2024::get_input_as_string;
+use aoc_2024::{format_duration, get_input_as_string};
 
 fn guard_walk(input: &str) -> (usize, usize) {
     let grid = input
@@ -109,7 +109,9 @@ fn march(mut grid: Vec<Vec<char>>, mut curr_position: (usize, usize)) -> Result<
 }
 
 fn count_distinct_steps(grid: &Vec<Vec<char>>) -> usize {
-    grid.into_iter().map(|row| row.into_iter().filter(|v| **v == 'x').count()).sum()
+    grid.into_iter()
+        .map(|row| row.into_iter().filter(|v| **v == 'x').count())
+        .sum()
 }
 
 fn solve(input: &str) -> (impl Display, impl Display) {
@@ -125,11 +127,11 @@ fn main() {
 
     let (r1, r2) = solve(&input);
 
-    let t = start.elapsed().as_nanos() as f64 / 1000.0;
+    let t = start.elapsed().as_nanos();
 
     println!("Part 1: {}", r1);
     println!("Part 2: {}", r2);
-    println!("Duration: {:.3}μs", t);
+    println!("Duration: {}", format_duration(t));
 }
 
 #[cfg(test)]

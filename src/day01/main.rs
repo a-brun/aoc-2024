@@ -3,7 +3,7 @@ use std::fmt::Display;
 use std::iter::zip;
 use std::time::Instant;
 
-use aoc_2024::get_input_as_string;
+use aoc_2024::{format_duration, get_input_as_string};
 
 fn calculate_difference(input: &str) -> i32 {
     let mut left: Vec<i32> = Vec::new();
@@ -73,11 +73,11 @@ fn main() {
 
     let (r1, r2) = solve(&input);
 
-    let t = start.elapsed().as_nanos() as f64 / 1000.0;
+    let t = start.elapsed().as_nanos();
 
     println!("Part 1: {}", r1);
     println!("Part 2: {}", r2);
-    println!("Duration: {:.3}μs", t);
+    println!("Duration: {}", format_duration(t));
 }
 
 #[cfg(test)]

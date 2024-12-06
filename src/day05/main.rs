@@ -4,7 +4,7 @@ use std::collections::HashSet;
 use std::fmt::Display;
 use std::time::Instant;
 
-use aoc_2024::get_input_as_string;
+use aoc_2024::{format_duration, get_input_as_string};
 
 fn mean_page(input: &str) -> (u32, u32) {
     let v = input
@@ -108,11 +108,11 @@ fn main() {
 
     let (r1, r2) = solve(&input);
 
-    let t = start.elapsed().as_nanos() as f64 / 1000.0;
+    let t = start.elapsed().as_nanos();
 
     println!("Part 1: {}", r1);
     println!("Part 2: {}", r2);
-    println!("Duration: {:.3}μs", t);
+    println!("Duration: {}", format_duration(t));
 }
 
 #[cfg(test)]

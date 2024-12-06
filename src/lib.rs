@@ -39,3 +39,15 @@ where
         .map(|i| i.parse().unwrap())
         .collect()
 }
+
+pub fn format_duration(nanos: u128) -> String {
+    let elapsed = nanos as f64 / 1000.0;
+
+    if elapsed > 1_000_000.0 {
+        format!("{:.03}s", elapsed / 1_000_000.0)
+    } else if elapsed > 1000.0 {
+        format!("{:.03}ms", elapsed / 1000.0)
+    } else {
+        format!("{:.03}μs", elapsed)
+    }
+}
