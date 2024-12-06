@@ -6,7 +6,7 @@ use std::time::Instant;
 
 use aoc_2024::get_input_as_string;
 
-fn mean_page(input: &str) -> u32 {
+fn mean_page(input: &str) -> (u32, u32) {
     let v = input
         .split("\n\n")
         .filter(|l| !l.is_empty())
@@ -17,6 +17,7 @@ fn mean_page(input: &str) -> u32 {
 
     let mut before_reqs: HashMap<u32, HashSet<u32>> = HashMap::new();
     let mut sum: u32 = 0;
+    let mut unordered_sum: u32 = 0;
 
     for (left, right) in p1.split("\n").map(|l| {
         l.split("|")
@@ -42,34 +43,60 @@ fn mean_page(input: &str) -> u32 {
         })
         .collect::<Vec<Vec<u32>>>()
     {
-        let mut rest: HashSet<u32> = HashSet::from_iter(instructions.iter().cloned());
-        let mut valid: bool = true;
-
-        for i in 0..instructions.len() - 1 {
-            let instruction = instructions[i];
-            rest.remove(&instruction);
-
-            if rest
-                .intersection(before_reqs.get(&instruction).unwrap_or(&HashSet::new()))
-                .count()
-                > 0
-            {
-                valid = false;
-                break;
-            }
-        }
-
-        if valid {
+        if is_ordered(&instructions, &before_reqs) {
             sum += instructions[(instructions.len() - 1) / 2];
+        } else {
+            let mut valid: Vec<u32> = Vec::new();
+            let mut remainings = Vec::from(instructions.clone());
+
+            while valid.len() < instructions.len() {
+                for i in 0..remainings.len() {
+                    let instruction: u32 = remainings[i];
+                    let mut rest: HashSet<u32> = HashSet::from_iter(remainings.iter().cloned());
+                    rest.remove(&instruction);
+
+                    if is_position_valid(&rest, &before_reqs, instruction) {
+                        remainings.remove(i);
+                        valid.push(instruction);
+                        break;
+                    }
+                }
+            }
+
+            unordered_sum += valid[(valid.len() - 1) / 2];
         }
     }
 
-    sum
+    (sum, unordered_sum)
+}
+
+fn is_ordered(instructions: &Vec<u32>, before_reqs: &HashMap<u32, HashSet<u32>>) -> bool {
+    let mut rest: HashSet<u32> = HashSet::from_iter(instructions.iter().cloned());
+
+    for i in 0..instructions.len() - 1 {
+        let instruction = instructions[i];
+        rest.remove(&instruction);
+
+        if !is_position_valid(&rest, before_reqs, instruction) {
+            return false;
+        }
+    }
+
+    true
+}
+
+fn is_position_valid(
+    rest: &HashSet<u32>,
+    before_reqs: &HashMap<u32, HashSet<u32>>,
+    instruction: u32,
+) -> bool {
+    rest.intersection(before_reqs.get(&instruction).unwrap_or(&HashSet::new()))
+        .count()
+        == 0
 }
 
 fn solve(input: &str) -> (impl Display, impl Display) {
-    let p1 = mean_page(input);
-    let p2 = mean_page(input);
+    let (p1, p2) = mean_page(input);
 
     (p1, p2)
 }
@@ -123,7 +150,7 @@ mod tests {
 61,13,29
 97,13,75,29,47
 ";
-        let res = mean_page(&input);
+        let (res, _) = mean_page(&input);
         assert_eq!(143, res);
     }
 
@@ -159,8 +186,8 @@ mod tests {
 97,13,75,29,47
 ";
 
-        let res = mean_page(&input);
+        let (_, res) = mean_page(&input);
 
-        assert_eq!(9, res);
+        assert_eq!(123, res);
     }
 }
