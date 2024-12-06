@@ -20,13 +20,14 @@ fn guard_walk(input: &str) -> (usize, usize) {
         }
     }
 
-    let r1 = march(grid.clone(), initial_position.clone()).unwrap();
+    let guard_route = march(grid.clone(), initial_position.clone()).unwrap();
+    let r1 = count_distinct_steps(&guard_route);
 
     let mut infinite_loop: usize = 0;
 
     for i in 0..grid.len() {
         for j in 0..grid[i].len() {
-            if grid[i][j] == '.' {
+            if grid[i][j] == '.' && guard_route[i][j] == 'x' {
                 let mut new_grid = grid.clone();
                 new_grid[i][j] = '#';
                 match march(new_grid, initial_position.clone()) {
@@ -40,7 +41,7 @@ fn guard_walk(input: &str) -> (usize, usize) {
     (r1, infinite_loop)
 }
 
-fn march(mut grid: Vec<Vec<char>>, mut curr_position: (usize, usize)) -> Result<usize, String> {
+fn march(mut grid: Vec<Vec<char>>, mut curr_position: (usize, usize)) -> Result<Vec<Vec<char>>, String> {
     let mut steps_count: u32 = 0;
     loop {
         let (i, j) = curr_position;
@@ -48,7 +49,7 @@ fn march(mut grid: Vec<Vec<char>>, mut curr_position: (usize, usize)) -> Result<
             '^' => {
                 if i == 0 {
                     grid[i][j] = 'x';
-                    return Ok(count_distinct_steps(&grid));
+                    return Ok(grid);
                 }
                 if grid[i - 1][j] == '#' {
                     grid[i][j] = '>';
@@ -61,7 +62,7 @@ fn march(mut grid: Vec<Vec<char>>, mut curr_position: (usize, usize)) -> Result<
             '>' => {
                 if j == grid[i].len() - 1 {
                     grid[i][j] = 'x';
-                    return Ok(count_distinct_steps(&grid));
+                    return Ok(grid);
                 }
                 if grid[i][j + 1] == '#' {
                     grid[i][j] = 'v';
@@ -74,7 +75,7 @@ fn march(mut grid: Vec<Vec<char>>, mut curr_position: (usize, usize)) -> Result<
             'v' => {
                 if i == grid.len() - 1 {
                     grid[i][j] = 'x';
-                    return Ok(count_distinct_steps(&grid));
+                    return Ok(grid);
                 }
                 if grid[i + 1][j] == '#' {
                     grid[i][j] = '<';
@@ -87,7 +88,7 @@ fn march(mut grid: Vec<Vec<char>>, mut curr_position: (usize, usize)) -> Result<
             '<' => {
                 if j == 0 {
                     grid[i][j] = 'x';
-                    return Ok(count_distinct_steps(&grid));
+                    return Ok(grid);
                 }
                 if grid[i][j - 1] == '#' {
                     grid[i][j] = '^';
