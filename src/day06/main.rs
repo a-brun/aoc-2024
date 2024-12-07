@@ -41,7 +41,10 @@ fn guard_walk(input: &str) -> (usize, usize) {
     (r1, infinite_loop)
 }
 
-fn march(mut grid: Vec<Vec<char>>, mut curr_position: (usize, usize)) -> Result<Vec<Vec<char>>, String> {
+fn march(
+    mut grid: Vec<Vec<char>>,
+    mut curr_position: (usize, usize),
+) -> Result<Vec<Vec<char>>, String> {
     let mut steps_count: u32 = 0;
     loop {
         let (i, j) = curr_position;
